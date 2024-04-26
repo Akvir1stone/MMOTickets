@@ -19,6 +19,7 @@ class Ticket(models.Model):
     body = CKEditor5Field()
     category = models.ManyToManyField(Category, through='TicketCategory')
     responders = models.ManyToManyField(User, through='TicketResponders')
+    pubdate = models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
 
     def close_ticket(self):
