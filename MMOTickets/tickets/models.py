@@ -17,8 +17,8 @@ class Ticket(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     head = models.CharField(max_length=200)
     body = CKEditor5Field()
-    category = models.ManyToManyField(Category, through='TicketCategory')
-    responders = models.ManyToManyField(User, through='TicketResponders')
+    category = models.ManyToManyField(Category, through='TicketCategory', related_name='tickets_category')
+    responders = models.ManyToManyField(User, through='TicketResponders', related_name='tickets_responders')
     pubdate = models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
 
