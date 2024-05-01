@@ -8,6 +8,6 @@ from .models import Category, Ticket
 class TicketsList(ListView):
     model = Ticket
     ordering = 'pubdate'
-    template_name = 'tickets.html'
+    template_name = 'flatpages/default.html'
     context_object_name = 'tickets'
 
