@@ -2,9 +2,18 @@
 
 <html lang="en">
 <head>
-    <title>Title</title>
+    {% block title %}
+    <h2>Одна известная ММО поиск команды</h2>
+    {% endblock title %}
 </head>
 <body>
 
+    {% block content %}
+    <h2>Активные объявления</h2>
+    <hr>
+    {% for ticket in tickets %}
+    {{ ticket.head }}
+    {% endfor %}
+    {% endblock content %}
 </body>
 </html>

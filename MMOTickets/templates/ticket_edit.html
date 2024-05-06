@@ -1,0 +1,19 @@
+{% extends 'flatpages/default.html' %}
+
+<html lang="en">
+<head>
+    {% block title %}
+    {% endblock title %}
+</head>
+<body>
+    {% block content %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.media }}
+            {{ form.as_p }}
+<!--            {{ ticket.body|safe }}-->
+<!--            TODO добавить кнопки сохранения и удаления-->
+        </form>
+    {% endblock content %}
+</body>
+</html>
