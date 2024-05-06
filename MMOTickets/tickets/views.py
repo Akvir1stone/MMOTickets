@@ -34,16 +34,17 @@ class TicketDetail(DetailView):  # вьюшка для просмтора тик
     context_object_name = 'ticket'
 
 
-def ticket_edit(request):  # вьюшка для редактирования тикетов TODO разобраться с тем, как получить параметр pk в url
-    data = Ticket.objects.all()  # TODO сделать кнопку сохранения и возврата на строницу MyTicketsView
-    form = TicketForm  # TODO сделать кнопку удаления тикета и возврата на строницу MyTicketsView
-    if request.method == 'POST':
-        form = TicketForm(request.POST)
-        if form.is_valid():
-            form.save()
-            form = TicketForm
-    context = {'data': data, 'form': form}
-    return render(request, 'ticket_edit.html', context)
+def ticket_edit(request, pk):  # вьюшка для редактирования тикетов
+    data = Ticket.objects.filter(pk=pk)  # TODO сделать кнопку сохранения и возврата на строницу MyTicketsView
+    if data:  # TODO добавить else который будет возвращать ошибку 404
+        form = TicketForm  # TODO сделать кнопку удаления тикета и возврата на строницу MyTicketsView
+        if request.method == 'POST':
+            form = TicketForm(request.POST)
+            if form.is_valid():
+                form.save()
+                form = TicketForm
+        context = {'data': data, 'form': form, }  # 'pk': pk,
+        return render(request, 'ticket_edit.html', context)
 
 # TODO UserTicketsList страница со своими тикетами метод с оповещением о респондах
 
