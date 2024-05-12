@@ -71,6 +71,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'MMOTickets.wsgi.application'
 
+LOGIN_URL = 'sign/login/'
+LOGIN_REDIRECT_URL = '/'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
