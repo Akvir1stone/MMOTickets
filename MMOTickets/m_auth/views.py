@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from .forms import MyLoginForm
+from django.http import HttpResponseRedirect
 
 # Create your views here.
 
@@ -12,8 +13,14 @@ def login_view(request):
         if form.is_valid():
             user = authenticate(email=form.data['email'], password=form.data['password'], )
             if user is not None:
-                pass  # TODO login
+                login(request, user)
+                return HttpResponseRedirect('')
             else:
-                pass  #
-    context = {'form': form,}
+                form = MyLoginForm()
+                error = 'wrong email or password'
+                context = {'form': form, 'error': error, }
+                return render(request, 'login.html', context)
+    if request.POST.get('registration'):
+        return HttpResponseRedirect('auth/registration/')
+    context = {'form': form, }
     return render(request, 'login.html', context)
