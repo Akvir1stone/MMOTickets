@@ -55,7 +55,7 @@ def ticket_responds(request, pk):
     if data:
         for dat in data:
             if dat.author == request.user:
-                responds_qs = Responds.objects.filter(ticket=dat)
+                responds_qs = Responds.objects.filter(ticket=dat)  # TODO prefetch_related and also do that for UserRespondsList
                 context = {'responds': responds_qs, }
                 return render(request, 'ticket_responds.html', context)
             else:
