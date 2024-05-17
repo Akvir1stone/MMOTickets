@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.http import Http404, HttpResponseForbidden
 from .forms import TicketForm
 from .models import Ticket, Responds
 
@@ -45,6 +47,22 @@ def ticket_edit(request, pk):  # вьюшка для редактировани�
                 form = TicketForm
         context = {'data': data, 'form': form, }  # 'pk': pk,
         return render(request, 'ticket_edit.html', context)
+
+
+@login_required  # TODO new
+def ticket_responds(request, pk):
+    data = Ticket.objects.filter(pk=pk)
+    if data:
+        for dat in data:
+            if dat.author == request.user:
+                responds_qs = Responds.objects.filter(ticket=dat)
+                context = {'responds': responds_qs, }
+                return render(request, 'ticket_responds.html', context)
+            else:
+                return HttpResponseForbidden()
+    else:
+        raise Http404
+
 
 # TODO UserTicketsList страница со своими тикетами метод с оповещением о респондах
 
