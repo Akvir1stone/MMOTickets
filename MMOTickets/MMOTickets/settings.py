@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_ckeditor_5',
     'tickets',
+    'my_custom_auth',
 ]
 
 MIDDLEWARE = [

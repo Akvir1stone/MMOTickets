@@ -16,10 +16,6 @@ class TicketsList(ListView):  # вьюшка для просмотра всех 
     template_name = 'tickets.html'
     context_object_name = 'tickets'
 
-# TODO нужна вьюшка (UserTicketsList) для просмотра и редактирования тикетов,
-#  на ней размещены только те тикеты, которые были созданы текущим пользователем,
-#  если их нет, то показывать предложение создать тикет
-
 
 class UserTicketsList(ListView, LoginRequiredMixin):  # вьюшка для просмотра всех своих тикетов TODO страница доступна только для авторизованных
     model = Ticket
@@ -38,19 +34,30 @@ class UserRespondsList(ListView, LoginRequiredMixin):  # Вьюшка с отк�
     context_object_name = 'responds'
 
     def get_queryset(self):
-        return Responds.objects.filter(ticket__author=self.request.user)
+        return Responds.objects.filter(ticket__author=self.request.user).prefetch_realted('head', 'category', )
 
 
-class TicketDetail(DetailView):  # вьюшка для просмтора тикетов TODO нужно добавить кнопку респонда
-    model = Ticket
-    form = TicketForm
-    # if request.method == 'POST':
-    #     form = TicketForm(request.POST)
-    #     if form.is_valid():
-    #         form.save()
-    #         form = TicketForm
-    template_name = 'ticket_edit.html'  # TODO добавить свой темплейт
-    context_object_name = 'ticket'
+@login_required
+def ticket_detail(request, pk):  # вьюшка для редактирования тикетов
+    data = Ticket.objects.filter(pk=pk)
+    if data:
+        for dat in data:
+            if request.method == 'POST':
+                if request.POST.get('response'):
+                    if not Responds.objects.filter(ticket=dat, responder=request.user).exists():
+                        Responds.objects.create(ticket=dat, responder=request.user)
+                        return HttpResponseRedirect('/')
+                    else:
+                        form = TicketForm(instance=dat)
+                        error = 'You already responded to that ticket'
+                        context = {'data': data, 'form': form, 'error': error, 'dat': dat, }
+                        return render(request, 'ticket_detail.html', context)
+            else:
+                form = TicketForm(instance=dat)
+                context = {'data': data, 'form': form, 'dat': dat, }
+                return render(request, 'ticket_detail.html', context)
+    else:
+        raise Http404
 
 
 @login_required
@@ -64,14 +71,33 @@ def ticket_edit(request, pk):  # вьюшка для редактировани�
                         form = TicketForm(request.POST, request.FILES, instance=dat)
                         if form.is_valid():
                             form.save()
-                            return HttpResponseRedirect('/')  # TODO перенаправлять на страницу моих тикетов
+                            return HttpResponseRedirect('/my_tickets/')
                     if request.POST.get('delete'):
                         dat.delete()
                         return HttpResponseRedirect('/')
                 else:
                     form = TicketForm(instance=dat)
-                    context = {'data': data, 'form': form, }  # 'pk': pk,
+                    context = {'data': data, 'form': form, }
                     return render(request, 'ticket_edit.html', context)
+            else:
+                return HttpResponseForbidden()
+    else:
+        raise Http404
+
+
+@login_required
+def ticket_responds(request, pk):
+    data = Ticket.objects.filter(pk=pk)
+    if data:
+        for dat in data:
+            if request.method == 'POST':
+                if request.POST.get('delete'):
+                    dat.delete()
+                    return HttpResponseRedirect('my_tickets/')
+            if dat.author == request.user:
+                responds_qs = Responds.objects.filter(ticket=dat).prefetch_related('category', )
+                context = {'responds': responds_qs, 'ticket': dat, }
+                return render(request, 'ticket_responds.html', context)
             else:
                 return HttpResponseForbidden()
     else:
@@ -83,21 +109,11 @@ def ticket_create(request):  # вьюшка для создания тикето
     form = TicketForm
     if request.method == 'POST':
         form = TicketForm(request.POST)
-        obj = form.save(commit=False)
-        obj.author = request.user
-        if obj.is_valid():
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.author = request.user
             obj.save()
             return HttpResponseRedirect('/')
     context = {'form': form, }
-    return render(request, 'ticket_edit.html', context)
+    return render(request, 'ticket_create.html', context)
 
-
-# TODO страницы регистрации и авторизации, подтверждение регистрации через почту
-
-
-# class TicketCreate(LoginRequiredMixin, CreateView):
-#     model = Ticket
-#     form_class = TicketForm
-#     success_url = "/"
-#     template_name = "ticket_edit.html"
-#     context_object_name = 'ticket_create'

@@ -7,14 +7,16 @@
 </head>
 <body>
     {% block content %}
+    {% if user.is_authenticated %}
+<!--        <h5>What r u doing?</h5>-->
+<!--        <h5>Go back!!!</h5>-->
+    {% else %}
         <form method="post">
             {% csrf_token %}
-            {{ form.media }}
             {{ form.as_p }}
-            <button class="btn btn-primary" type="submit" name="submit" value="Submit">Submit</button>
-            <button class="btn btn-primary" type="submit" name="delete" value="Delete">Delete</button>
-<!--            <input type="submit" value="Submit">-->
+            <button class="btn btn-primary" type="submit" name="sign" value="Sign">Sign up</button>
         </form>
+    {% endif %}
     {% endblock content %}
 </body>
 </html>
