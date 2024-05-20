@@ -24,7 +24,9 @@
             </td>
             <td>
 <!--                нужен реквест пост вместе с respond.responder.email-->
-                <a class="btn btn-primary" href="" methods="post" type="submit" name="accept">Accept respond</a>
+                <button class="btn btn-primary">Accept respond 2</button>
+                <input type="submit" value="{% respond.responder.email %}" name="accept">
+<!--                <a class="btn btn-primary" href="" methods="post" type="submit" name="accept">Accept respond</a>-->
             </td>
         </tr>
     {% endfor %}
