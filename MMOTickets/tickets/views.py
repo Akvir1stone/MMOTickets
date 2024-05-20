@@ -49,7 +49,7 @@ def ticket_edit(request, pk):  # вьюшка для редактировани�
         return render(request, 'ticket_edit.html', context)
 
 
-@login_required  # TODO new
+@login_required
 def ticket_responds(request, pk):
     data = Ticket.objects.filter(pk=pk)
     if data:

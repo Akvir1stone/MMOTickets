@@ -1,3 +1,5 @@
+import random
+
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from .forms import MyLoginForm
@@ -24,3 +26,6 @@ def login_view(request):
         return HttpResponseRedirect('auth/registration/')
     context = {'form': form, }
     return render(request, 'login.html', context)
+
+
+# TODO code = OneTimeCode.objects.create(code=random.randint(100000, 999999), username=form.data['username'], email=form.data['email'], password=form.data['password'])
