@@ -9,9 +9,9 @@
 <body>
 
     {% block content %}
-    {% if tickets %}
+    {% if my_tickets %}
     <table class="table table-primary">
-    {% for ticket in tickets %}
+    {% for ticket in my_tickets %}
         <tr>
             <td>
                 {{ ticket.category }}
@@ -22,11 +22,15 @@
             <td>
                 <a class="btn btn-primary" href="{% url 'ticket_detail' ticket.id %}">Details</a>
             </td>
+            <td>
+                <a class="btn btn-primary" href="url for ticket responds">Responds</a>
+            </td>
         </tr>
     {% endfor %}
     </table>
     {% else %}
-    <h5>There is no active tickets right now</h5>
+    <h5>You don't have any tickets right now, what to make one?</h5>
+    <a class="btn btn-primary" href="/create/">Create ticket</a>
     {% endif %}
     {% endblock content %}
 </body>

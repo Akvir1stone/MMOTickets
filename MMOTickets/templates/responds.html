@@ -17,10 +17,10 @@
                 {{ respond.responder }}
             </td>
             <td>
-                {{ ticket.category }}
+                {{ respond.ticket.category }}
             </td>
             <td>
-                {{ ticket.head }}
+                {{ respond.ticket.head }}
             </td>
             <td>
 <!--                нужен реквест пост вместе с respond.responder.email-->
@@ -30,7 +30,7 @@
     {% endfor %}
     </table>
     {% else %}
-    <h5>Nobody responded to this ticket yet</h5>
+    <h5>Nobody responded to your tickets yet</h5>
     {% endif %}
     {% endblock content %}
 </body>
