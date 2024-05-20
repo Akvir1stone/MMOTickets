@@ -34,7 +34,7 @@ class UserRespondsList(ListView, LoginRequiredMixin):  # Вьюшка с отк�
     context_object_name = 'responds'
 
     def get_queryset(self):
-        return Responds.objects.filter(ticket__author=self.request.user).prefetch_realted('head', 'category', )
+        return Responds.objects.filter(ticket__author=self.request.user)
 
 
 @login_required
@@ -95,7 +95,7 @@ def ticket_responds(request, pk):
                     dat.delete()
                     return HttpResponseRedirect('my_tickets/')
             if dat.author == request.user:
-                responds_qs = Responds.objects.filter(ticket=dat).prefetch_related('category', )
+                responds_qs = Responds.objects.filter(ticket=dat)
                 context = {'responds': responds_qs, 'ticket': dat, }
                 return render(request, 'ticket_responds.html', context)
             else:

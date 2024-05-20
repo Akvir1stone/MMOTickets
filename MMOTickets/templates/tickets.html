@@ -9,11 +9,25 @@
 <body>
 
     {% block content %}
-    <h2>Активные объявления</h2>
-    <hr>
+    {% if tickets %}
+    <table class="table table-primary">
     {% for ticket in tickets %}
-    {{ ticket.head }}
+        <tr>
+            <td>
+                {{ ticket.category }}
+            </td>
+            <td>
+                {{ ticket.head }}
+            </td>
+            <td>
+                <a class="btn btn-primary" href="{% url 'ticket_detail' ticket.id %}">Details</a>
+            </td>
+        </tr>
     {% endfor %}
+    </table>
+    {% else %}
+    <h5>There is no active tickets right now</h5>
+    {% endif %}
     {% endblock content %}
 </body>
 </html>

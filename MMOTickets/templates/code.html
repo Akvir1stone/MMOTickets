@@ -8,8 +8,8 @@
 <body>
     {% block content %}
     {% if user.is_authenticated %}
-<!--        <h5>What r u doing?</h5>-->
-<!--        <h5>Go back!!!</h5>-->
+        <h5>What r u doing?</h5>
+        <h5>Go back!!!</h5>
     {% else %}
         <form method="post">
             {% csrf_token %}
