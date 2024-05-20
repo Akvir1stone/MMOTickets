@@ -3,17 +3,37 @@
 <html lang="en">
 <head>
     {% block title %}
-        {{ ticket.head }}
+    Your responds
     {% endblock title %}
 </head>
 <body>
+
     {% block content %}
-<!--    TODO кнопка удаления тикета-->
-        {% for respond in responds %}
-            {{ respond.ticket.author }}
-<!--    TODO нужна таблица, которая будет содержать основную инфу о респонде и кнопку отправки письма респонденту-->
-            <hr>
-        {% endfor %}
+    {% if responds %}
+    <table class="table table-primary">
+    {% for respond in responds %}
+        <tr>
+            <td>
+                {{ respond.responder }}
+            </td>
+            <td>
+                {{ ticket.category }}
+            </td>
+            <td>
+                {{ ticket.head }}
+            </td>
+            <td>
+<!--                нужен реквест пост вместе с respond.responder.email-->
+                <button class="btn btn-primary">Accept respond 2</button>
+<!--                <input type="submit" value="{{ respond.responder.email }}" name="accept">-->
+                <a class="btn btn-primary" methods="post" type="submit" name="accept">Accept respond</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% else %}
+    <h5>Nobody responded to this ticket yet</h5>
+    {% endif %}
     {% endblock content %}
 </body>
 </html>

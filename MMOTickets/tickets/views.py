@@ -93,7 +93,10 @@ def ticket_responds(request, pk):
             if request.method == 'POST':
                 if request.POST.get('delete'):
                     dat.delete()
-                    return HttpResponseRedirect('my_tickets/')
+                    return HttpResponseRedirect('/my_tickets/')
+                if request.POST.get('accept'):
+                    print('yes')
+                    return HttpResponseRedirect('/')
             if dat.author == request.user:
                 responds_qs = Responds.objects.filter(ticket=dat)
                 context = {'responds': responds_qs, 'ticket': dat, }
@@ -106,14 +109,19 @@ def ticket_responds(request, pk):
 
 @login_required
 def ticket_create(request):  # вьюшка для создания тикетов
-    form = TicketForm
+    print('0')
     if request.method == 'POST':
-        form = TicketForm(request.POST)
-        if form.is_valid():
-            obj = form.save(commit=False)
-            obj.author = request.user
-            obj.save()
-            return HttpResponseRedirect('/')
-    context = {'form': form, }
-    return render(request, 'ticket_create.html', context)
+        print('1')
+        if request.POST.get('submit'):
+            form = TicketForm(request.POST)
+            print('11')
+            if form.is_valid():
+                obj = form.save(commit=False)
+                obj.author = request.user
+                obj.save()
+                return HttpResponseRedirect('/')
+    else:
+        form = TicketForm
+        context = {'form': form, }
+        return render(request, 'ticket_create.html', context)
 

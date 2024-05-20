@@ -9,9 +9,29 @@
 <body>
 
     {% block content %}
-    <h2>Twoi responds</h2>
-    <hr>
-    {{ responds }}
+    {% if responds %}
+    <table class="table table-primary">
+    {% for respond in responds %}
+        <tr>
+            <td>
+                {{ respond.responder }}
+            </td>
+            <td>
+                {{ respond.ticket.category }}
+            </td>
+            <td>
+                {{ respond.ticket.head }}
+            </td>
+            <td>
+<!--                нужен реквест пост вместе с respond.responder.email-->
+                <a class="btn btn-primary" href="" methods="post" type="submit" name="accept">Accept respond</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% else %}
+    <h5>Nobody responded to your tickets yet</h5>
+    {% endif %}
     {% endblock content %}
 </body>
 </html>

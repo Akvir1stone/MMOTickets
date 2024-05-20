@@ -8,5 +8,5 @@ urlpatterns = [
     path('responds/', UserRespondsList.as_view()),
     path('my_tickets/', UserTicketsList.as_view()),
     path('create/', ticket_create),
-    path('ticket/<int:pk>/responds/', ticket_responds),
+    path('ticket/<int:pk>/responds/', ticket_responds, name='ticket_responds'),
 ]

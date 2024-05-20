@@ -15,7 +15,7 @@ def registration_view(request):
         form = UserForm(request.POST)
         if form.is_valid():
             # user = User.objects.create_user(email=form.email, username=form.username, password=form.password)
-            code = OneTimeCode.objects.create(code=random.choice('abcdef'), username=form.data['username'], email=form.data['email'], password=form.data['password'])
+            code = OneTimeCode.objects.create(code=random.randint(100000, 999999), username=form.data['username'], email=form.data['email'], password=form.data['password'])
             code.save()
             # TODO send it to email
             return HttpResponseRedirect('/auth/code/')
