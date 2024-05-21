@@ -27,11 +27,6 @@ class Ticket(models.Model):
         self.save()
 
 
-# class TicketCategory(models.Model):
-#     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
-#     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-
 class Responds(models.Model):  # автоматическое определение респондера при создании
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     responder = models.ForeignKey(User, on_delete=models.CASCADE)

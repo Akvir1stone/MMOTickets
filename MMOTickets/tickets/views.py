@@ -118,3 +118,20 @@ def respond_delete(request, pk):
         raise Http404
 
 
+@login_required
+def ticket_delete(request, pk):
+    data = Ticket.objects.filter(pk=pk)
+    if data:
+        for dat in data:
+            if dat.author == request.user:
+                if request.method == 'POST':
+                    dat.delete()
+                    return HttpResponseRedirect('/my_tickets')
+                else:
+                    return render(request, 'ticket_delete.html', {'ticket': dat})
+            else:
+                return HttpResponseForbidden()
+    else:
+        raise Http404
+
+

@@ -23,8 +23,14 @@
                 {{ respond.ticket.head }}
             </td>
             <td>
-<!--                нужен реквест пост вместе с respond.responder.email-->
-                <a class="btn btn-primary" href="" methods="post" type="submit" name="accept">Accept respond</a>
+                {% if respond.is_accepted %}
+                <a class="btn btn-primary" href="{% url 'respond_conformation' respond.id %}">Accept respond</a>
+                {% else %}
+                <h5>Accepted</h5>
+                {% endif %}
+            </td>
+            <td>
+                <a class="btn btn-primary" href="{% url 'respond_delete' respond.id %}">Delete respond</a>
             </td>
         </tr>
     {% endfor %}
