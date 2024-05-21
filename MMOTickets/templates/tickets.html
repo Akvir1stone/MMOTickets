@@ -20,7 +20,7 @@
                 {{ ticket.head }}
             </td>
             <td>
-<!--                <a class="btn btn-primary" href="{ url 'ticket_detail' ticket.id }">Details</a>-->
+                <a class="btn btn-primary" href="{% url 'ticket_detail' ticket.id %}">Details</a>
             </td>
         </tr>
     {% endfor %}
