@@ -125,3 +125,45 @@ def ticket_create(request):  # вьюшка для создания тикето
         context = {'form': form, }
         return render(request, 'ticket_create.html', context)
 
+
+@login_required
+def respond_conformation(request, pk):
+    data = Responds.objects.filter(pk=pk)
+    if data:
+        for dat in data:
+            if dat.ticket.author == request.user:
+                dat.is_accepted = True
+                # TODO send mail to responder (dat.responder.email)
+                return HttpResponseRedirect('/my_tickets')
+            else:
+                return HttpResponseForbidden()
+    else:
+        raise Http404
+
+
+@login_required
+def respond_delete(request, pk):
+    data = Responds.objects.filter(pk=pk)
+    if data:
+        for dat in data:
+            if dat.ticket.author == request.user:
+                dat.delete()
+                return HttpResponseRedirect('/my_tickets')
+            else:
+                return HttpResponseForbidden()
+    else:
+        raise Http404
+
+
+@login_required
+def ticket_delete(request, pk):
+    data = Ticket.objects.filter(pk=pk)
+    if data:
+        for dat in data:
+            if dat.author == request.user:
+                dat.delete()
+                return HttpResponseRedirect('/my_tickets')
+            else:
+                return HttpResponseForbidden()
+    else:
+        raise Http404

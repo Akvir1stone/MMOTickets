@@ -6,19 +6,29 @@ from django.http import HttpResponseRedirect
 from .models import OneTimeCode
 from .forms import OTCodeForm, UserForm, MyLoginForm
 
+
 # Create your views here.
 
 
 def registration_view(request):
     form = UserForm()
+    print(1)
     if request.POST.get('send'):
+        print(2)
         form = UserForm(request.POST)
         if form.is_valid():
+            print(3)
             # user = User.objects.create_user(email=form.email, username=form.username, password=form.password)
-            code = OneTimeCode.objects.create(code=random.randint(100000, 999999), username=form.data['username'], email=form.data['email'], password=form.data['password'])
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            code = OneTimeCode.objects.create(code=random.randint(100000, 999999), username=username, email=email, password=password)
             code.save()
             # TODO send it to email
             return HttpResponseRedirect('/auth/code/')
+        else:
+            form = UserForm(request.POST)
+            return render(request, 'registration.html', {'form': form, })
     return render(request, 'registration.html', {'form': form, })
 
 
