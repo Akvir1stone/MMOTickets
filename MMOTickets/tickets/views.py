@@ -89,12 +89,9 @@ def respond_conformation(request, pk):
     if data:
         for dat in data:
             if dat.ticket.author == request.user:
-                if request.method == 'POST':
-                    dat.is_accepted = True
-                    # TODO send mail to responder (dat.responder.email)
-                    return HttpResponseRedirect('/my_tickets')
-                else:
-                    return render(request, 'respond_conformation.html', {'respond': dat})
+                dat.is_accepted = True
+                # TODO send mail to responder (dat.responder.email)
+                return HttpResponseRedirect('/my_tickets')
             else:
                 return HttpResponseForbidden()
     else:
@@ -107,11 +104,8 @@ def respond_delete(request, pk):
     if data:
         for dat in data:
             if dat.ticket.author == request.user:
-                if request.method == 'POST':
-                    dat.delete()
-                    return HttpResponseRedirect('/my_tickets')
-                else:
-                    return render(request, 'respond_delete.html', {'respond': dat})
+                dat.delete()
+                return HttpResponseRedirect('/my_tickets')
             else:
                 return HttpResponseForbidden()
     else:
@@ -124,11 +118,8 @@ def ticket_delete(request, pk):
     if data:
         for dat in data:
             if dat.author == request.user:
-                if request.method == 'POST':
-                    dat.delete()
-                    return HttpResponseRedirect('/my_tickets')
-                else:
-                    return render(request, 'ticket_delete.html', {'ticket': dat})
+                dat.delete()
+                return HttpResponseRedirect('/my_tickets')
             else:
                 return HttpResponseForbidden()
     else:
