@@ -90,6 +90,7 @@ def respond_conformation(request, pk):
         for dat in data:
             if dat.ticket.author == request.user:
                 if request.method == 'POST':
+                    dat.is_accepted = True
                     # TODO send mail to responder (dat.responder.email)
                     return HttpResponseRedirect('/my_tickets')
                 else:
