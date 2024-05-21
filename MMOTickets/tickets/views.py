@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponseForbidden
+from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from .forms import TicketForm
 from .models import Ticket, Responds
 
@@ -64,11 +64,56 @@ def ticket_responds(request, pk):
         raise Http404
 
 
-# TODO UserTicketsList страница со своими тикетами метод с оповещением о респондах
+@login_required
+def ticket_create(request):  # вьюшка для создания тикетов
+    print('0')
+    if request.method == 'POST':
+        print('1')
+        if request.POST.get('submit'):
+            form = TicketForm(request.POST)
+            print('11')
+            if form.is_valid():
+                obj = form.save(commit=False)
+                obj.author = request.user
+                obj.save()
+                return HttpResponseRedirect('/')
+    else:
+        form = TicketForm
+        context = {'form': form, }
+        return render(request, 'ticket_create.html', context)
 
-# TODO страница просмотра респодов с кнопкой ответа на них и оповещением респондента
 
-# TODO UserRespondsList тикеты на которые дал респонд с оповещением о принятых респондах
+@login_required
+def respond_conformation(request, pk):
+    data = Responds.objects.filter(pk=pk)
+    if data:
+        for dat in data:
+            if dat.ticket.author == request.user:
+                if request.method == 'POST':
+                    # TODO send mail to responder (dat.responder.email)
+                    return HttpResponseRedirect('/my_tickets')
+                else:
+                    return render(request, 'respond_conformation.html', {'respond': dat})
+            else:
+                return HttpResponseForbidden()
+    else:
+        raise Http404
 
-# TODO страницы регистрации и авторизации, подтверждение регистрации через почту
+
+@login_required
+def respond_delete(request, pk):
+    data = Responds.objects.filter(pk=pk)
+    if data:
+        for dat in data:
+            if dat.ticket.author == request.user:
+                if request.method == 'POST':
+                    dat.delete()
+                    return HttpResponseRedirect('/my_tickets')
+                else:
+                    return render(request, 'respond_delete.html', {'respond': dat})
+            else:
+                return HttpResponseForbidden()
+    else:
+        raise Http404
+
 

@@ -32,5 +32,7 @@ class Ticket(models.Model):
 #     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
-class Responds(models.Model):
+class Responds(models.Model):  # автоматическое определение респондера при создании
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    responder = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_accepted = models.BooleanField(default=False)

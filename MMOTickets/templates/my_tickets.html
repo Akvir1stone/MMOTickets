@@ -23,7 +23,10 @@
                 <a class="btn btn-primary" href="{% url 'ticket_detail' ticket.id %}">Details</a>
             </td>
             <td>
-                <a class="btn btn-primary" href="url for ticket responds">Responds</a>
+                <a class="btn btn-primary" href="{% url 'ticket_responds' ticket.id %}">Responds</a>
+            </td>
+            <td>
+                <a class="btn btn-primary" href="{% url 'ticket_edit' ticket.id %}">Responds</a>
             </td>
         </tr>
     {% endfor %}
