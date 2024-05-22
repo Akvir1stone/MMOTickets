@@ -235,3 +235,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # TODO special site page, available only for stuff, that allows to send news to all users
 # TODO auto delete of onetimecodes, probably celery, but not sure yet. This should help
 #   https://stackoverflow.com/questions/65718886/how-to-delete-a-record-after-a-certain-time-of-its-creation-in-django
+#   https://stackoverflow.com/questions/46959866/how-to-delete-django-object-after-countdown
+

@@ -68,6 +68,7 @@ def code_conformation_view(request):
             for dat in code_data:
                 user = User.objects.create_user(username=dat.username, email=dat.email, password=dat.password)
                 user.save()
+                dat.delete()
             return HttpResponseRedirect('/auth/login/')
     else:
         form = OTCodeForm()
