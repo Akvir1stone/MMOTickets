@@ -106,6 +106,13 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'email_host_name'
+EMAIL_HOST_PASSWORD = 'email_host_password'
+EMAIL_USE_SSL = True
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -221,3 +228,10 @@ CKEDITOR_5_CONFIGS = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# TODO mails that needs to be send: registration code conformation; news; possibly ticket respond notification
+#   for doing so i need following: html templates for forming text in message; maybe signals not sure yet;
+#   add all of this to existing views
+# TODO special site page, available only for stuff, that allows to send news to all users
+# TODO auto delete of onetimecodes, probably celery, but not sure yet. This should help
+#   https://stackoverflow.com/questions/65718886/how-to-delete-a-record-after-a-certain-time-of-its-creation-in-django
