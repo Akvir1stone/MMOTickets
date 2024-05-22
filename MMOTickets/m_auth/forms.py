@@ -1,14 +1,26 @@
 from django import forms
 from django.contrib.auth.models import User
 
+from .models import OneTimeCode
+from django.contrib.auth.forms import AuthenticationForm
 
-class MyLoginForm(forms.ModelForm):
+
+class LoginForm(AuthenticationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'password')
+
+
+class UserForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
         model = User
-        fields = ('email', 'password', )
+        fields = ('email', 'username', 'password',)
 
 
-class RegistrationForm(forms.Form):
-    email = forms.EmailField(label='Email')
-    password = forms.CharField(label='Password', widget=forms.PasswordInput())
+class OTCodeForm(forms.ModelForm):
+
+    class Meta:
+        model = OneTimeCode
+        fields = ('code',)

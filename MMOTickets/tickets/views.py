@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.models import User
@@ -64,14 +65,44 @@ def ticket_responds(request, pk):
         raise Http404
 
 
+class UserTicketsList(ListView, LoginRequiredMixin):  # вьюшка для просмотра всех своих тикетов TODO страница доступна только для авторизованных
+    model = Ticket
+    ordering = 'pubdate'
+    template_name = 'my_tickets.html'  # TODO копия основной страницы + кнопка редактировать тикет
+    context_object_name = 'my_tickets'
+
+    def get_queryset(self):
+        return Ticket.objects.filter(author=self.request.user)
+
+
+@login_required
+def ticket_detail(request, pk):  # вьюшка для редактирования тикетов
+    data = Ticket.objects.filter(pk=pk)
+    if data:
+        for dat in data:
+            if request.method == 'POST':
+                if request.POST.get('response'):
+                    if not Responds.objects.filter(ticket=dat, responder=request.user).exists():
+                        Responds.objects.create(ticket=dat, responder=request.user)
+                        return HttpResponseRedirect('/')
+                    else:
+                        form = TicketForm(instance=dat)
+                        error = 'You already responded to that ticket'
+                        context = {'data': data, 'form': form, 'error': error, 'dat': dat, }
+                        return render(request, 'ticket_detail.html', context)
+            else:
+                form = TicketForm(instance=dat)
+                context = {'data': data, 'form': form, 'dat': dat, }
+                return render(request, 'ticket_detail.html', context)
+    else:
+        raise Http404
+
+
 @login_required
 def ticket_create(request):  # вьюшка для создания тикетов
-    print('0')
     if request.method == 'POST':
-        print('1')
         if request.POST.get('submit'):
             form = TicketForm(request.POST)
-            print('11')
             if form.is_valid():
                 obj = form.save(commit=False)
                 obj.author = request.user
