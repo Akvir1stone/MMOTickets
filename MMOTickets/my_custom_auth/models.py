@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -9,7 +11,8 @@ class OneTimeCode(models.Model):
     email = models.CharField(max_length=256)
     password = models.CharField(max_length=256)
     code = models.CharField(max_length=6)
-    # create_date = models.DateField(auto_now_add=True)
+    create_date = models.DateField(auto_now_add=True)
+    expire_time = models.DateField()
 
     def check_viability(self):  # TODO проверка времени прошедшего с создания вызов по таймеру раз в минуту, если время больше 'n', то удалить
         pass

@@ -23,7 +23,7 @@
                 {{ respond.ticket.head }}
             </td>
             <td>
-                {% if respond.is_accepted %}
+                {% if not respond.is_accepted %}
                 <a class="btn btn-primary" href="{% url 'respond_conformation' respond.id %}">Accept respond</a>
                 {% else %}
                 <h5>Accepted</h5>

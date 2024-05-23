@@ -1,10 +1,11 @@
+import datetime
 import random
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponseRedirect
 from .models import OneTimeCode
-from .forms import OTCodeForm, UserForm, MyLoginForm
+from .forms import OTCodeForm, UserForm, LoginForm
 
 
 # Create your views here.
@@ -12,17 +13,16 @@ from .forms import OTCodeForm, UserForm, MyLoginForm
 
 def registration_view(request):
     form = UserForm()
-    print(1)
     if request.POST.get('send'):
-        print(2)
         form = UserForm(request.POST)
         if form.is_valid():
-            print(3)
             # user = User.objects.create_user(email=form.email, username=form.username, password=form.password)
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            code = OneTimeCode.objects.create(code=random.randint(100000, 999999), username=username, email=email, password=password)
+            exp_time = datetime.datetime.now() + datetime.timedelta(minutes=5)
+            code = OneTimeCode.objects.create(code=random.randint(100000, 999999), username=username, email=email, password=password, expire_time=exp_time)
+            code.expire_time = code.create_date - datetime.timedelta(minutes=5)
             code.save()
             # TODO send it to email
             return HttpResponseRedirect('/auth/code/')
@@ -40,6 +40,7 @@ def code_conformation_view(request):
             for dat in code_data:
                 user = User.objects.create_user(username=dat.username, email=dat.email, password=dat.password)
                 user.save()
+                dat.delete()
             return HttpResponseRedirect('/auth/login/')
     else:
         form = OTCodeForm()
@@ -49,20 +50,22 @@ def code_conformation_view(request):
 
 def login_view(request):
     if request.POST.get('login'):
-        form = MyLoginForm(request.POST)
+        form = LoginForm(data=request.POST)
         if form.is_valid():
-            user = authenticate(email=form.data['email'], password=form.data['password'], )
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
                 return HttpResponseRedirect('/')
             else:
-                form = MyLoginForm()
-                error = 'wrong email or password'
+                form = LoginForm()
+                error = 'wrong username or password'
                 context = {'form': form, 'error': error, }
                 return render(request, 'login.html', context)
     if request.POST.get('registration'):
         return HttpResponseRedirect('/auth/registration/')
-    form = MyLoginForm()
+    form = LoginForm()
     context = {'form': form, }
     return render(request, 'login.html', context)
 

@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from django.contrib.auth.models import User
+from django.views.generic import ListView
 from .forms import TicketForm
 from .models import Ticket, Responds
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
@@ -17,10 +16,10 @@ class TicketsList(ListView):  # вьюшка для просмотра всех 
     context_object_name = 'tickets'
 
 
-class UserTicketsList(ListView, LoginRequiredMixin):  # вьюшка для просмотра всех своих тикетов TODO страница доступна только для авторизованных
+class UserTicketsList(ListView, LoginRequiredMixin):  # вьюшка для просмотра всех своих тикетов
     model = Ticket
     ordering = 'pubdate'
-    template_name = 'my_tickets.html'  # TODO копия основной страницы + кнопка редактировать тикет
+    template_name = 'my_tickets.html'
     context_object_name = 'my_tickets'
 
     def get_queryset(self):
@@ -133,6 +132,7 @@ def respond_conformation(request, pk):
         for dat in data:
             if dat.ticket.author == request.user:
                 dat.is_accepted = True
+                print(1)
                 # TODO send mail to responder (dat.responder.email)
                 return HttpResponseRedirect('/my_tickets')
             else:
