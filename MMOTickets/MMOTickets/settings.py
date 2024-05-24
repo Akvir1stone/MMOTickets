@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     'tickets.apps.TicketsConfig',
     'my_custom_auth.apps.AuthConfig',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -229,3 +230,6 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_SSL = True
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25

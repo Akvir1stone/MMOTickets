@@ -25,7 +25,6 @@ def registration_view(request):
             password = form.cleaned_data['password']
             exp_time = datetime.datetime.now() + datetime.timedelta(minutes=5)
             code = OneTimeCode.objects.create(code=random.randint(100000, 999999), username=username, email=email, password=password, expire_time=exp_time)
-            code.expire_time = code.create_date - datetime.timedelta(minutes=5)
             code.save()
             # post_save.connect(send_code, sender=OneTimeCode)
             return HttpResponseRedirect('/auth/code/')

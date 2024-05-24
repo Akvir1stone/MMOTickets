@@ -13,5 +13,5 @@ def send_code(sender, instance, created, **kwargs):
             message=f'Your conformation code: {instance.code}',
             from_email='user@yandex.ru',
             recipient_list=[instance.email],
-            fail_silently=False
+            fail_silently=True
         )

@@ -12,7 +12,7 @@ class OneTimeCode(models.Model):
     password = models.CharField(max_length=256)
     code = models.CharField(max_length=6)
     create_date = models.DateField(auto_now_add=True)
-    expire_time = models.DateField()
+    expire_time = models.DateTimeField()
 
     def check_viability(self):  # TODO проверка времени прошедшего с создания вызов по таймеру раз в минуту, если время больше 'n', то удалить
         pass
