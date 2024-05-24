@@ -47,6 +47,11 @@
                                 <a class="nav-link" href="/auth/login">Login</a>
                             </li>
                         {% endif %}
+                        {% if user.is_staff %}
+                            <li class="nav-item">
+                            <a class="nav-link" href="/create_news">Create news</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

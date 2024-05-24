@@ -1,10 +1,14 @@
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.db.models.signals import post_save
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
-from .forms import TicketForm
+from .forms import TicketForm, NewsForm
 from .models import Ticket, Responds
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
+from .signals import notify_about_respond
 
 # Create your views here.
 
@@ -26,10 +30,10 @@ class UserTicketsList(ListView, LoginRequiredMixin):  # вьюшка для пр
         return Ticket.objects.filter(author=self.request.user)
 
 
-class UserRespondsList(ListView, LoginRequiredMixin):  # Вьюшка с откликами на свои тикеты TODO страница доступна только для авторизованных
+class UserRespondsList(ListView, LoginRequiredMixin):  # Вьюшка с откликами на свои тикеты
     model = Responds
     ordering = 'ticket__pubdate'
-    template_name = 'responds.html'  # TODO добавить кнопку для ответа респонденту (отправка майла)
+    template_name = 'responds.html'
     context_object_name = 'responds'
 
     def get_queryset(self):
@@ -45,6 +49,7 @@ def ticket_detail(request, pk):  # вьюшка для редактирован�
                 if request.POST.get('response'):
                     if not Responds.objects.filter(ticket=dat, responder=request.user).exists():
                         Responds.objects.create(ticket=dat, responder=request.user)
+                        # post_save.connect(notify_about_respond, sender=Responds)
                         return HttpResponseRedirect('/')
                     else:
                         form = TicketForm(instance=dat)
@@ -108,12 +113,9 @@ def ticket_responds(request, pk):
 
 @login_required
 def ticket_create(request):  # вьюшка для создания тикетов
-    print('0')
     if request.method == 'POST':
-        print('1')
         if request.POST.get('submit'):
             form = TicketForm(request.POST)
-            print('11')
             if form.is_valid():
                 obj = form.save(commit=False)
                 obj.author = request.user
@@ -132,8 +134,14 @@ def respond_conformation(request, pk):
         for dat in data:
             if dat.ticket.author == request.user:
                 dat.is_accepted = True
-                print(1)
-                # TODO send mail to responder (dat.responder.email)
+                dat.save()
+                send_mail(
+                    subject=f'Your respond is accepted',
+                    message=f'Your respond to "{dat.ticket.head}" is accepted\n. Here is the authors mail {dat.ticket.author.email}',
+                    from_email='user@yandex.ru',
+                    recipient_list=[dat.responder.email],
+                    fail_silently=False
+                )
                 return HttpResponseRedirect('/my_tickets')
             else:
                 return HttpResponseForbidden()
@@ -167,3 +175,29 @@ def ticket_delete(request, pk):
                 return HttpResponseForbidden()
     else:
         raise Http404
+
+
+@login_required
+def create_news(request):
+    if request.method == 'POST':
+        form = NewsForm(request.POST)
+        all_users = []
+        for u in User.objects.all():
+            if not u.is_staff:
+                all_users.append(u)
+        if form.is_valid():
+            head = form.data['head']
+            text = form.data['text']
+            send_mail(
+                subject=f'{head}',
+                message=f'{text}',
+                from_email='user@yandex.ru',
+                recipient_list=all_users,
+                fail_silently=False
+            )
+            return HttpResponseRedirect('/')
+    else:
+        form = NewsForm()
+        return render(request, 'create_news.html', {'form': form})
+
+

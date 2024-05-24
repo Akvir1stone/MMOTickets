@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import TicketsList, ticket_edit, UserRespondsList, ticket_create, ticket_responds, UserTicketsList, ticket_detail, respond_conformation, respond_delete, ticket_delete
+from .views import TicketsList, ticket_edit, UserRespondsList, ticket_create, ticket_responds, UserTicketsList, ticket_detail, respond_conformation, respond_delete, ticket_delete, create_news
 
 urlpatterns = [
     path('', TicketsList.as_view()),
@@ -12,4 +12,5 @@ urlpatterns = [
     path('respond/<int:pk>/delete/', respond_delete, name='respond_delete'),
     path('ticket/<int:pk>/delete/', ticket_delete, name='ticket_delete'),
     path('ticket/<int:pk>/responds/', ticket_responds, name='ticket_responds'),
+    path('create_news/', create_news)
 ]

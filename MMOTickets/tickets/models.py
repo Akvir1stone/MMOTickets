@@ -5,7 +5,7 @@ from django_ckeditor_5.fields import CKEditor5Field
 
 # Create your models here.
 
-categories = {'tank': 'Танк', 'not a tank': 'не Танк', 'definetely not a tank': 'вообще не Танк', }
+categories = {'tank': 'Tank', 'healer': 'healer', 'dd': 'Damage dealer', 'merchant': 'Merchant', 'guildmaster': 'Guildmaster', 'questgiver': 'Questgiver', 'blacksmith': 'Blacksmith', 'tanner': 'Tanner', 'potionmaker': 'Potionmaker', 'spellmaster': 'Spellmaster', }
 
 
 class Ticket(models.Model):
@@ -29,3 +29,9 @@ class Responds(models.Model):  # автоматическое определен
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     responder = models.ForeignKey(User, on_delete=models.CASCADE)
     is_accepted = models.BooleanField(default=False)
+
+
+class News(models.Model):
+    head = models.CharField(max_length=255)
+    text = models.TextField()
+

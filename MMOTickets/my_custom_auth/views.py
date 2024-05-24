@@ -1,11 +1,14 @@
 import datetime
 import random
+
+from django.db.models.signals import post_save
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponseRedirect
 from .models import OneTimeCode
 from .forms import OTCodeForm, UserForm, LoginForm
+from .signals import send_code
 
 
 # Create your views here.
@@ -24,7 +27,7 @@ def registration_view(request):
             code = OneTimeCode.objects.create(code=random.randint(100000, 999999), username=username, email=email, password=password, expire_time=exp_time)
             code.expire_time = code.create_date - datetime.timedelta(minutes=5)
             code.save()
-            # TODO send it to email
+            # post_save.connect(send_code, sender=OneTimeCode)
             return HttpResponseRedirect('/auth/code/')
         else:
             form = UserForm(request.POST)
